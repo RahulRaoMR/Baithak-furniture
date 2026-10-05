@@ -1,0 +1,92 @@
+import { ArrowRight } from 'lucide-react';
+
+const categoryImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+  import: 'default',
+  query: '?url',
+});
+
+const categories = [
+  {
+    id: 'sofas',
+    title: ['Custom', 'Sofas'],
+    imagePath: '../assets/images/category-sofas.png',
+    imageAlt: 'Custom sofa designed by Baithak',
+    href: '/sofas',
+  },
+  {
+    id: 'chairs',
+    title: ['Chairs &', 'Seating'],
+    imagePath: '../assets/images/category-chairs.png',
+    imageAlt: 'Custom chair and seating by Baithak',
+    href: '/chairs',
+  },
+  {
+    id: 'custom-woodwork',
+    title: ['Custom', 'Woodwork'],
+    imagePath: '../assets/images/category-woodwork.jpg',
+    imageAlt: 'Custom woodwork crafted by Baithak',
+    href: '/custom-woodwork',
+  },
+  {
+    id: 'bespoke-furniture',
+    title: ['Bespoke', 'Furniture'],
+    imagePath: '../assets/images/category-bespoke.jpg',
+    imageAlt: 'Bespoke furniture created by Baithak',
+    href: '/bespoke-furniture',
+  },
+];
+
+function CategoryCards() {
+  return (
+    <section className="category-section" id="furniture" aria-label="Furniture categories">
+      <div className="container">
+        <div className="category-grid">
+          {categories.map((category, index) => {
+            const imageSource = categoryImages[category.imagePath];
+            const accessibleTitle = category.title.join(' ');
+
+            return (
+              <a
+                className={`category-card category-card-${index + 1}`}
+                id={category.id}
+                key={accessibleTitle}
+                href={category.href}
+                aria-label={`Explore ${accessibleTitle}`}
+              >
+                <div className="category-image-wrap">
+                  <span className="category-image-fallback" aria-hidden="true" />
+                  {imageSource && (
+                    <img
+                      className="category-image"
+                      src={imageSource}
+                      alt={category.imageAlt}
+                      loading="lazy"
+                      decoding="async"
+                      onError={(event) => {
+                        event.currentTarget.hidden = true;
+                      }}
+                    />
+                  )}
+                </div>
+
+                <div className="category-card-content">
+                  <h2>
+                    {category.title.map((line) => (
+                      <span key={line}>{line}</span>
+                    ))}
+                  </h2>
+                  <span className="category-arrow" aria-hidden="true">
+                    <ArrowRight size={20} strokeWidth={1.7} />
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default CategoryCards;
