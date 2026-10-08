@@ -44,7 +44,7 @@ function BrandStory() {
             <img
               className="brand-story__image"
               src={storyImage}
-              alt="Custom furniture craftsmanship by Baithak"
+              alt="Baithak upholstered furniture arranged in a living room"
               loading="lazy"
               decoding="async"
               onError={(event) => {

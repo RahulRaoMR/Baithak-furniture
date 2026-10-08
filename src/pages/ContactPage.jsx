@@ -1,10 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   ArrowUpRight,
   AtSign,
   Facebook,
   Instagram,
+  Mail,
   MapPin,
   MessageCircle,
   Phone,
@@ -24,30 +25,93 @@ const socialLinks = [
 ];
 
 function ContactPage() {
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState('');
+  const [whatsappUrl, setWhatsappUrl] = useState('');
+  const submittingRef = useRef(false);
+  const submissionTimerRef = useRef(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     document.title = 'Contact Baithak | Custom Furniture Bengaluru';
+    return () => clearTimeout(submissionTimerRef.current);
   }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (submittingRef.current) return;
+
     const data = new FormData(event.currentTarget);
+    const name = String(data.get('name') || '').trim();
+    const phone = String(data.get('phone') || '').trim();
+    const project = String(data.get('project') || '').trim();
+    const details = String(data.get('message') || '').trim();
+    const digits = phone.replace(/\D/g, '');
+    const nationalNumber = digits.length === 12 && digits.startsWith('91')
+      ? digits.slice(2)
+      : digits.length === 11 && digits.startsWith('0') ? digits.slice(1) : digits;
+    const phoneIsValid = /^\+?[\d\s().-]+$/.test(phone)
+      && (!phone.startsWith('+') || (digits.length === 12 && digits.startsWith('91')))
+      && /^[2-9]\d{9}$/.test(nationalNumber)
+      && !/^(\d)\1{9}$/.test(nationalNumber);
+    const nextErrors = {};
+
+    if (name.length < 2) nextErrors.name = 'Please enter your name (at least 2 characters).';
+    if (!phoneIsValid) nextErrors.phone = 'Please enter a valid 10-digit Indian phone number, with or without +91.';
+    if (!project) nextErrors.project = 'Please choose a furniture type.';
+    if (details.length < 2) nextErrors.message = 'Please add a short description of your project.';
+
+    setErrors(nextErrors);
+    setFeedback('');
+    setWhatsappUrl('');
+    if (Object.keys(nextErrors).length > 0) {
+      const firstInvalidName = ['name', 'phone', 'project', 'message'].find((field) => nextErrors[field]);
+      event.currentTarget.elements.namedItem(firstInvalidName)?.focus();
+      return;
+    }
+
+    event.currentTarget.elements.namedItem('name').value = name;
+    event.currentTarget.elements.namedItem('phone').value = `+91${nationalNumber}`;
+    event.currentTarget.elements.namedItem('message').value = details;
     const message = [
       'Hello Baithak, I would like to discuss a furniture project.',
       '',
-      `Name: ${data.get('name')}`,
-      `Phone: ${data.get('phone')}`,
-      `Project: ${data.get('project')}`,
-      `Message: ${data.get('message')}`,
+      `Name: ${name}`,
+      `Phone: +91${nationalNumber}`,
+      `Project: ${project}`,
+      `Message: ${details}`,
     ].join('\n');
     const separator = contactInfo.whatsapp.href.includes('?') ? '&' : '?';
-    window.open(`${contactInfo.whatsapp.href}${separator}text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+    const url = `${contactInfo.whatsapp.href}${separator}text=${encodeURIComponent(message)}`;
+    submittingRef.current = true;
+    setIsSubmitting(true);
+    setWhatsappUrl(url);
+    setFeedback('Opening WhatsApp... Send the prepared message there to complete your enquiry.');
+
+    try {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      setFeedback('WhatsApp could not be opened automatically. Please use the link below.');
+    }
+    submissionTimerRef.current = setTimeout(() => {
+      submittingRef.current = false;
+      setIsSubmitting(false);
+    }, 1500);
+  };
+
+  const handleFieldChange = (event) => {
+    const field = event.target.name;
+    setErrors((current) => ({ ...current, [field]: undefined }));
+    setFeedback('');
+    setWhatsappUrl('');
   };
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <Navbar />
-      <main className="contact-page">
+      <main className="contact-page" id="main-content" tabIndex={-1}>
         <section className="contact-hero" aria-labelledby="contact-title">
           <img className="contact-hero__image" src={contactHeroImage} alt="Baithak furniture collection" />
           <div className="contact-hero__overlay" aria-hidden="true" />
@@ -73,6 +137,14 @@ function ContactPage() {
             </header>
 
             <div className="contact-details__methods">
+              <a href={contactInfo.email.href}>
+                <Mail size={22} strokeWidth={1.6} aria-hidden="true" />
+                <span>
+                  <small>Email us</small>
+                  {contactInfo.email.display}
+                </span>
+                <ArrowUpRight size={18} strokeWidth={1.7} aria-hidden="true" />
+              </a>
               <a href={contactInfo.phone.href}>
                 <Phone size={22} strokeWidth={1.6} aria-hidden="true" />
                 <span>
@@ -115,18 +187,23 @@ function ContactPage() {
               </div>
             </div>
 
-            <form className="contact-form" onSubmit={handleSubmit}>
+            <form className="contact-form" onSubmit={handleSubmit} onChange={handleFieldChange} noValidate aria-busy={isSubmitting}>
               <label>
                 <span>Your name</span>
-                <input type="text" name="name" autoComplete="name" required />
+                <input type="text" name="name" autoComplete="name" required minLength={2}
+                  aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? 'contact-name-error' : undefined} />
+                {errors.name && <small className="contact-form__error" id="contact-name-error">{errors.name}</small>}
               </label>
               <label>
                 <span>Phone number</span>
-                <input type="tel" name="phone" autoComplete="tel" required />
+                <input type="tel" name="phone" autoComplete="tel" inputMode="tel" required
+                  aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? 'contact-phone-error' : undefined} />
+                {errors.phone && <small className="contact-form__error" id="contact-phone-error">{errors.phone}</small>}
               </label>
               <label>
                 <span>What are you looking for?</span>
-                <select name="project" defaultValue="Custom sofa" required>
+                <select name="project" defaultValue="Custom sofa" required
+                  aria-invalid={Boolean(errors.project)} aria-describedby={errors.project ? 'contact-project-error' : undefined}>
                   <option>Custom sofa</option>
                   <option>Chairs or recliners</option>
                   <option>Bed or headboard</option>
@@ -134,14 +211,23 @@ function ContactPage() {
                   <option>Complete furniture project</option>
                   <option>Something else</option>
                 </select>
+                {errors.project && <small className="contact-form__error" id="contact-project-error">{errors.project}</small>}
               </label>
               <label>
                 <span>Tell us about your space</span>
-                <textarea name="message" rows="5" required />
+                <textarea name="message" rows="5" required minLength={2}
+                  aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? 'contact-message-error' : undefined} />
+                {errors.message && <small className="contact-form__error" id="contact-message-error">{errors.message}</small>}
               </label>
-              <button className="button button-primary" type="submit">
-                Continue on WhatsApp <ArrowRight size={18} strokeWidth={1.7} />
+              <button className="button button-primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Opening WhatsApp...' : 'Continue on WhatsApp'} <ArrowRight size={18} strokeWidth={1.7} aria-hidden="true" />
               </button>
+              <p className="contact-form__status" role="status" aria-live="polite" aria-atomic="true">{feedback}</p>
+              {whatsappUrl && (
+                <a className="contact-form__fallback" href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                  Open WhatsApp <ArrowUpRight size={16} aria-hidden="true" />
+                </a>
+              )}
             </form>
           </div>
         </section>

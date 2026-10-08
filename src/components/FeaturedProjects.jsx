@@ -1,40 +1,5 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-
-const projectImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
-
-const projects = [
-  {
-    number: '01',
-    category: 'Custom Living',
-    title: ['The Living Room,', 'Reconsidered.'],
-    location: 'Bengaluru',
-    imagePath: '../assets/images/project-01.png',
-    imageAlt: 'Custom Baithak living room furniture project',
-    href: '/our-work/project-01',
-  },
-  {
-    number: '02',
-    category: 'Bespoke Seating',
-    title: ['Built Around', 'Comfort.'],
-    location: 'Bengaluru',
-    imagePath: '../assets/images/project-02.png',
-    imageAlt: 'Bespoke seating project crafted by Baithak',
-    href: '/our-work/project-02',
-  },
-  {
-    number: '03',
-    category: 'Custom Woodwork',
-    title: ['Made to Belong.'],
-    location: 'Bengaluru',
-    imagePath: '../assets/images/project-03.jpg',
-    imageAlt: 'Custom woodwork project crafted by Baithak',
-    href: '/our-work/project-03',
-  },
-];
+import { projects } from '../data/projects.js';
 
 function FeaturedProjects() {
   return (
@@ -58,8 +23,8 @@ function FeaturedProjects() {
 
         <div className="featured-projects__grid">
           {projects.map((project, index) => {
-            const imageSource = projectImages[project.imagePath];
-            const projectTitle = project.title.join(' ');
+            const imageSource = project.heroImage;
+            const projectTitle = project.title;
 
             return (
               <a
@@ -91,7 +56,7 @@ function FeaturedProjects() {
                     <span>{project.category}</span>
                   </span>
                   <span className="featured-projects__project-title">
-                    {project.title.map((line) => (
+                    {project.titleLines.map((line) => (
                       <span key={line}>{line}</span>
                     ))}
                   </span>

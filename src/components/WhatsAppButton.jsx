@@ -2,25 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
 import { contactInfo } from '../data/contact.js';
 
-function WhatsAppLogo({ size = 28 }) {
+function WhatsAppLogo({ size = 28, fullSize = false }) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 32 32"
+      viewBox={fullSize ? '3 3 26 26' : '0 0 32 32'}
       fill="none"
       aria-hidden="true"
     >
       <path
         d="M16 4.25a11.5 11.5 0 0 0-9.88 17.4L4.5 27.5l5.98-1.57A11.5 11.5 0 1 0 16 4.25Z"
+        fill={fullSize ? '#fff' : 'none'}
         stroke="currentColor"
         strokeWidth="2.4"
         strokeLinejoin="round"
       />
       <path
-        d="M11.35 10.45c.35-.36.74-.4 1.05-.4h.36c.2 0 .42.06.54.4l1.04 2.5c.1.3.07.54-.1.8l-.78 1c-.14.18-.18.36-.05.58.45.78 1.08 1.5 1.8 2.1.83.68 1.55 1.08 2.38 1.4.25.1.44.04.6-.14l1.13-1.38c.2-.25.45-.3.74-.2l2.38 1.13c.3.14.46.25.5.45.05.2.05 1.12-.27 1.98-.32.86-1.85 1.66-2.56 1.76-.66.1-1.5.14-2.42-.15-.56-.18-1.28-.42-2.2-.82-3.86-1.67-6.38-5.57-6.58-5.83-.2-.27-1.57-2.1-1.57-4 0-1.9.98-2.84 1.33-3.23Z"
+        d="M11.4 9.4c-.4-.8-.8-.8-1.2-.8h-.9c-.3 0-.8.1-1.2.6-.4.5-1.6 1.5-1.6 3.7s1.6 4.3 1.8 4.6c.2.3 3.2 4.9 7.8 6.8 3.9 1.7 4.7 1.4 5.6 1.3.9-.1 2.7-1.1 3.1-2.2.4-1.1.4-2 .3-2.2-.1-.2-.4-.3-.8-.5l-3.2-1.5c-.4-.2-.8-.3-1 .2-.3.4-1.2 1.5-1.5 1.8-.3.3-.5.3-.9.1-.4-.2-1.9-.7-3.6-2.2-1.3-1.2-2.2-2.6-2.5-3-.3-.4 0-.6.2-.8l.7-.8c.2-.3.3-.4.5-.7.2-.3.1-.6 0-.8L11.4 9.4Z"
         fill="currentColor"
-        transform="translate(1.7 1.2) scale(.82)"
+        transform="translate(2.2 1.8) scale(.82)"
       />
     </svg>
   );
@@ -141,12 +142,13 @@ function WhatsAppButton() {
         className="whatsapp-button"
         type="button"
         aria-label="Start a WhatsApp enquiry with Baithak"
+        title="WhatsApp enquiry"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={openDialog}
         ref={triggerRef}
       >
-        <WhatsAppLogo />
+        <WhatsAppLogo size={56} fullSize />
       </button>
 
       {isOpen && (

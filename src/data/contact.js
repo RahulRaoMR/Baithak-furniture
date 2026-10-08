@@ -1,4 +1,8 @@
 export const contactInfo = {
+  email: {
+    display: 'Baithakfurniture9@gmail.com',
+    href: 'mailto:Baithakfurniture9@gmail.com',
+  },
   phone: {
     display: '+91 63634 48488',
     href: 'tel:+916363448488',

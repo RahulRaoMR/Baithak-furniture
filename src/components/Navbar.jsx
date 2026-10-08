@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, MapPin, Menu, X } from 'lucide-react';
+import { contactInfo } from '../data/contact.js';
+import { collections } from '../data/collections.js';
 import Logo from './Logo.jsx';
 
 const furnitureGroups = [
@@ -32,7 +34,6 @@ const furnitureGroups = [
     links: [
       ['Coffee Tables', '/coffee-tables'],
       ['Side Tables', '/side-tables'],
-      ['Console Tables', '/console-tables'],
     ],
   },
   {
@@ -44,19 +45,13 @@ const furnitureGroups = [
   },
 ];
 
-const collectionLinks = [
-  ['Living', '/collections/living'],
-  ['Seating', '/collections/seating'],
-  ['Bedroom', '/collections/bedroom'],
-  ['Dining', '/collections/dining'],
-  ['Bespoke', '/collections/bespoke'],
-];
+const collectionLinks = collections.map(({ label, href }) => [label, href]);
 
 const primaryLinks = [
-  ['Collections', '/#collections'],
-  ['Customise', '/#customisation'],
+  ['Collections', '/collections'],
+  ['Customise', '/customise'],
   ['Our Work', '/our-work'],
-  ['About', '/#about'],
+  ['About', '/about'],
   ['Contact', '/contact'],
 ];
 
@@ -66,7 +61,27 @@ function Navbar() {
   const [mobileAccordion, setMobileAccordion] = useState(null);
   const menuToggleRef = useRef(null);
   const furnitureTriggerRef = useRef(null);
+  const furnitureMenuRef = useRef(null);
+  const furnitureCloseTimerRef = useRef(null);
+  const furniturePinnedRef = useRef(false);
   const currentPath = window.location.pathname;
+
+  const closeFurnitureMenu = () => {
+    clearTimeout(furnitureCloseTimerRef.current);
+    furniturePinnedRef.current = false;
+    setIsFurnitureOpen(false);
+  };
+
+  useEffect(() => () => clearTimeout(furnitureCloseTimerRef.current), []);
+
+  useEffect(() => {
+    if (!isFurnitureOpen) return undefined;
+    const handlePointerDown = (event) => {
+      if (!furnitureMenuRef.current?.contains(event.target)) closeFurnitureMenu();
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [isFurnitureOpen]);
 
   useEffect(() => {
     if (!isMenuOpen && !isFurnitureOpen) return undefined;
@@ -74,7 +89,8 @@ function Navbar() {
     const handleKeyDown = (event) => {
       if (event.key !== 'Escape') return;
       setIsMenuOpen(false);
-      setIsFurnitureOpen(false);
+      setMobileAccordion(null);
+      closeFurnitureMenu();
       if (isMenuOpen) menuToggleRef.current?.focus();
       else furnitureTriggerRef.current?.focus();
     };
@@ -104,6 +120,7 @@ function Navbar() {
 
   const isActive = (href) => {
     const path = href.split('#')[0] || '/';
+    if (href === '/collections') return currentPath === href || currentPath.startsWith(`${href}/`);
     if (href.includes('#')) return currentPath === path && window.location.hash === `#${href.split('#')[1]}`;
     return currentPath === path;
   };
@@ -121,10 +138,18 @@ function Navbar() {
           </a>
           <div
             className={`nav-mega${isFurnitureOpen ? ' is-open' : ''}`}
-            onMouseEnter={() => setIsFurnitureOpen(true)}
-            onMouseLeave={() => setIsFurnitureOpen(false)}
+            ref={furnitureMenuRef}
+            onMouseEnter={() => {
+              clearTimeout(furnitureCloseTimerRef.current);
+              setIsFurnitureOpen(true);
+            }}
+            onMouseLeave={() => {
+              furnitureCloseTimerRef.current = setTimeout(() => {
+                if (!furniturePinnedRef.current) setIsFurnitureOpen(false);
+              }, 200);
+            }}
             onBlur={(event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) setIsFurnitureOpen(false);
+              if (!event.currentTarget.contains(event.relatedTarget)) closeFurnitureMenu();
             }}
           >
             <button
@@ -132,7 +157,19 @@ function Navbar() {
               type="button"
               aria-expanded={isFurnitureOpen}
               aria-controls="furniture-mega-menu"
-              onClick={() => setIsFurnitureOpen((open) => !open)}
+              onClick={() => {
+                clearTimeout(furnitureCloseTimerRef.current);
+                furniturePinnedRef.current = !furniturePinnedRef.current;
+                setIsFurnitureOpen(furniturePinnedRef.current);
+              }}
+              onKeyDown={(event) => {
+                if (event.key !== 'ArrowDown') return;
+                event.preventDefault();
+                clearTimeout(furnitureCloseTimerRef.current);
+                furniturePinnedRef.current = true;
+                setIsFurnitureOpen(true);
+                requestAnimationFrame(() => furnitureMenuRef.current?.querySelector('a')?.focus());
+              }}
               ref={furnitureTriggerRef}
             >
               Furniture
@@ -144,7 +181,7 @@ function Navbar() {
                   <div className="nav-mega__group" key={group.label}>
                     <p>{group.label}</p>
                     {group.links.map(([label, href]) => (
-                      <a href={href} key={label} onClick={() => setIsFurnitureOpen(false)}>
+                      <a href={href} key={label} onClick={closeFurnitureMenu}>
                         {label}
                       </a>
                     ))}
@@ -161,8 +198,14 @@ function Navbar() {
           ))}
         </div>
 
-        <a className="button button-primary nav-quote" href="/contact#enquiry">
-          Get a Quote <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
+        <a
+          className="button button-primary nav-quote"
+          href={contactInfo.address.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open Baithak showroom location in Google Maps"
+        >
+          <MapPin size={18} strokeWidth={1.8} aria-hidden="true" /> Location
         </a>
 
         <button
@@ -171,7 +214,7 @@ function Navbar() {
           aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           aria-controls="mobile-navigation"
           aria-expanded={isMenuOpen}
-          onClick={() => setIsMenuOpen((open) => !open)}
+          onClick={() => (isMenuOpen ? closeMenu() : setIsMenuOpen(true))}
           ref={menuToggleRef}
         >
           {isMenuOpen ? <X size={23} strokeWidth={1.8} /> : <Menu size={23} strokeWidth={1.8} />}
@@ -181,6 +224,7 @@ function Navbar() {
           className={`mobile-navigation${isMenuOpen ? ' is-open' : ''}`}
           id="mobile-navigation"
           aria-hidden={!isMenuOpen}
+          inert={!isMenuOpen}
         >
           <a className={currentPath === '/' ? 'is-active' : undefined} href="/" onClick={closeMenu}>
             Home
@@ -197,6 +241,8 @@ function Navbar() {
             <div
               className={`mobile-accordion__panel${mobileAccordion === 'furniture' ? ' is-open' : ''}`}
               id="mobile-furniture-links"
+              aria-hidden={!isMenuOpen || mobileAccordion !== 'furniture'}
+              inert={!isMenuOpen || mobileAccordion !== 'furniture'}
             >
               {furnitureGroups.flatMap((group) => group.links).map(([label, href]) => (
                 <a href={href} key={label} onClick={closeMenu}>
@@ -218,7 +264,10 @@ function Navbar() {
             <div
               className={`mobile-accordion__panel${mobileAccordion === 'collections' ? ' is-open' : ''}`}
               id="mobile-collection-links"
+              aria-hidden={!isMenuOpen || mobileAccordion !== 'collections'}
+              inert={!isMenuOpen || mobileAccordion !== 'collections'}
             >
+              <a href="/collections" onClick={closeMenu}>All Collections</a>
               {collectionLinks.map(([label, href]) => (
                 <a href={href} key={label} onClick={closeMenu}>
                   {label}
@@ -232,8 +281,15 @@ function Navbar() {
               {label}
             </a>
           ))}
-          <a className="button button-primary mobile-quote" href="/contact#enquiry" onClick={closeMenu}>
-            Get a Quote <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
+          <a
+            className="button button-primary mobile-quote"
+            href={contactInfo.address.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open Baithak showroom location in Google Maps"
+            onClick={closeMenu}
+          >
+            <MapPin size={18} strokeWidth={1.8} aria-hidden="true" /> Location
           </a>
         </div>
       </nav>

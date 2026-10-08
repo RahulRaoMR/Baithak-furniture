@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { contactInfo } from '../data/contact';
 
 const customisationImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
   eager: true,
@@ -57,10 +58,16 @@ const initialSelections = {
   finish: 'Warm Walnut',
 };
 
-function Customisation() {
+function Customisation({ standalone = false }) {
   const [activeTab, setActiveTab] = useState('size');
   const [selections, setSelections] = useState(initialSelections);
   const activeOption = customisationOptions.find((option) => option.id === activeTab);
+  const Heading = standalone ? 'h1' : 'h2';
+  const enquiryMessage = [
+    'Hi Baithak, I would like to design a custom furniture piece.',
+    ...customisationOptions.map((option) => `${option.label}: ${selections[option.id]}`),
+  ].join('\n');
+  const enquiryHref = `${contactInfo.whatsapp.href}?text=${encodeURIComponent(enquiryMessage)}`;
 
   const selectOption = (value) => {
     setSelections((current) => ({ ...current, [activeTab]: value }));
@@ -83,17 +90,21 @@ function Customisation() {
   };
 
   return (
-    <section className="customisation" id="customisation" aria-labelledby="customisation-title">
+    <section className={`customisation${standalone ? ' customisation--standalone' : ''}`} id="customisation" aria-labelledby="customisation-title">
       <div className="container">
         <header className="customisation__header">
           <p className="customisation__eyebrow">Made for you</p>
-          <h2 id="customisation-title">
-            Your space.
-            <br />
-            Your comfort.
-            <br />
-            Your finish.
-          </h2>
+          <Heading id="customisation-title">
+            {standalone ? 'Customise your furniture.' : (
+              <>
+                Your space.
+                <br />
+                Your comfort.
+                <br />
+                Your finish.
+              </>
+            )}
+          </Heading>
           <p>
             Begin with a design you love, then shape the details around your room and the way you
             live.
@@ -108,7 +119,8 @@ function Customisation() {
                 className="customisation__image"
                 src={customisationImage}
                 alt="Customisable Baithak furniture in a considered interior"
-                loading="lazy"
+                loading={standalone ? 'eager' : 'lazy'}
+                fetchPriority={standalone ? 'high' : undefined}
                 decoding="async"
                 onError={(event) => {
                   event.currentTarget.hidden = true;
@@ -187,7 +199,12 @@ function Customisation() {
             </div>
 
             <div className="customisation__cta">
-              <a className="button button-primary" href="/contact">
+              <a
+                className="button button-primary"
+                href={enquiryHref}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Design My Piece <ArrowRight size={18} strokeWidth={1.7} aria-hidden="true" />
               </a>
               <a href="/contact">Talk to Baithak</a>

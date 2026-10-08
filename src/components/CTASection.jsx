@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight, ExternalLink, MessageCircle, Phone } from 'lucide-react';
 import { contactInfo } from '../data/contact.js';
-
-const consultationImages = import.meta.glob('../assets/images/consultation-cta.jpg', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-});
-const consultationImage = consultationImages['../assets/images/consultation-cta.jpg'];
+import consultationImage from '../assets/images/gallery/studio-014.png';
 
 function CTASection() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -21,7 +15,7 @@ function CTASection() {
             <img
               className={`cta-section__image${imageLoaded ? ' is-loaded' : ''}`}
               src={consultationImage}
-              alt="A custom Baithak interior created around the client's space"
+              alt="Blue Baithak lounge chair and matching ottoman in a furnished interior"
               loading="lazy"
               decoding="async"
               onLoad={() => setImageLoaded(true)}
@@ -79,6 +73,10 @@ function CTASection() {
           <p className="cta-section__trust">Furniture, made around real spaces.</p>
 
           <div className="cta-section__contact">
+            <div className="cta-section__contact-item cta-section__contact-item--email">
+              <span>Email Us</span>
+              <a href={contactInfo.email.href}>{contactInfo.email.display}</a>
+            </div>
             <div className="cta-section__contact-item">
               <span>Phone</span>
               <a href={contactInfo.phone.href}>{contactInfo.phone.display}</a>

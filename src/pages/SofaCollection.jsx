@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
+import useDialogFocus from '../hooks/useDialogFocus.js';
 
 const galleryImages = import.meta.glob('../assets/images/gallery/*.{jpg,jpeg,png,webp,avif}', {
   eager: true,
@@ -12,9 +13,9 @@ const galleryImages = import.meta.glob('../assets/images/gallery/*.{jpg,jpeg,png
 const studioSofaIds = [4, 6, 10, 11, 12, 13];
 const archiveSofaIds = [
   2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-  26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 41, 46, 53, 54, 59, 61, 62,
-  63, 64, 66, 68, 69, 72, 74, 80, 81, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96,
-  104, 105, 106, 108, 116, 117, 123, 124, 125, 126, 127, 128, 129, 130, 132, 134,
+  26, 27, 28, 29, 30, 31, 34, 35, 36, 37, 38, 46, 53, 54, 59, 61, 62,
+  63, 64, 66, 68, 69, 72, 74, 80, 81, 86, 87, 88, 89, 90, 91, 92, 93, 94,
+  104, 105, 106, 108, 116, 117, 123, 124, 128, 129, 130, 132, 134,
   135, 136, 137, 138,
 ];
 
@@ -36,6 +37,8 @@ const sofas = [
 
 function SofaCollection() {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const isViewerOpen = selectedIndex !== null;
+  const dialogRef = useDialogFocus(isViewerOpen);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -43,27 +46,29 @@ function SofaCollection() {
   }, []);
 
   useEffect(() => {
-    if (selectedIndex === null) return undefined;
+    if (!isViewerOpen) return undefined;
 
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') setSelectedIndex(null);
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setSelectedIndex(null);
+      }
       if (event.key === 'ArrowLeft') {
+        event.preventDefault();
         setSelectedIndex((current) => (current - 1 + sofas.length) % sofas.length);
       }
       if (event.key === 'ArrowRight') {
+        event.preventDefault();
         setSelectedIndex((current) => (current + 1) % sofas.length);
       }
     };
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedIndex]);
+  }, [isViewerOpen]);
 
   const showPrevious = () => {
     setSelectedIndex((current) => (current - 1 + sofas.length) % sofas.length);
@@ -75,8 +80,9 @@ function SofaCollection() {
 
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <Navbar />
-      <main className="sofa-page">
+      <main className="sofa-page" id="main-content" tabIndex={-1}>
         <section className="sofa-hero" aria-labelledby="sofa-page-title">
           <button
             className="sofa-hero__image"
@@ -85,7 +91,6 @@ function SofaCollection() {
             aria-label="Open featured sofa image"
           >
             <img src={sofas[0].src} alt="Baithak custom sofa in a finished interior" />
-            <span>View full image</span>
           </button>
           <div className="container sofa-hero__copy">
             <p>Custom sofas &amp; sectionals</p>
@@ -152,6 +157,8 @@ function SofaCollection() {
           role="dialog"
           aria-modal="true"
           aria-label={`Sofa ${selectedIndex + 1} of ${sofas.length}`}
+          ref={dialogRef}
+          tabIndex={-1}
           onClick={() => setSelectedIndex(null)}
         >
           <div className="archive-viewer__topbar">

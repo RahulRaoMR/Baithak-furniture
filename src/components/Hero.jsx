@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowRight } from 'lucide-react';
-import heroImage from '../assets/images/hero-main.png';
+import heroImage from '../assets/images/gallery/studio-006.png';
 
 function Hero() {
   const scrollToNextSection = () => {
@@ -24,10 +24,6 @@ function Hero() {
             made around you.
           </h1>
           <p className="hero-supporting">Designed for your space. Crafted for your life.</p>
-          <p className="hero-description">
-            From bespoke sofas and statement chairs to custom woodwork, Baithak transforms ideas
-            into furniture made specifically for your space.
-          </p>
           <div className="hero-actions">
             <a className="button button-primary hero-primary" href="#our-work">
               Explore Our Work <ArrowRight size={18} strokeWidth={1.8} />
@@ -39,12 +35,6 @@ function Hero() {
         </div>
 
         <div className="hero-footer">
-          <div className="hero-progress" aria-label="Slide 1 of 3">
-            <span>01</span>
-            <span className="hero-progress-line" aria-hidden="true" />
-            <span>03</span>
-          </div>
-
           <button
             className="hero-scroll-button"
             type="button"

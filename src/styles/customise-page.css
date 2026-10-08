@@ -1,0 +1,38 @@
+.customisation--standalone {
+  padding-block: 3rem 4rem;
+}
+
+.customisation--standalone .customisation__header {
+  margin-bottom: 2.5rem;
+}
+
+.customisation--standalone .customisation__header h1 {
+  max-width: 760px;
+  margin-top: 1rem;
+  font-size: 3rem;
+  line-height: 1.1;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.customisation--standalone .customisation__visual {
+  min-height: 560px;
+}
+
+@media (max-width: 600px) {
+  .customisation--standalone {
+    padding-block: 2rem 3rem;
+  }
+
+  .customisation--standalone .customisation__header {
+    margin-bottom: 2rem;
+  }
+
+  .customisation--standalone .customisation__header h1 {
+    font-size: 2rem;
+  }
+
+  .customisation--standalone .customisation__visual {
+    min-height: 360px;
+  }
+}

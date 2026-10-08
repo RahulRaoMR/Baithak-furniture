@@ -1,45 +1,5 @@
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-
-const furnitureImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
-
-const products = [
-  {
-    name: 'Aster Sofa',
-    category: 'Sofa',
-    imagePath: '../assets/images/furniture-aster-sofa.png',
-    hoverImage: null,
-    alt: 'Baithak Aster Sofa',
-    href: '/furniture/aster-sofa',
-  },
-  {
-    name: 'Noma Lounge Chair',
-    category: 'Lounge Chair',
-    imagePath: '../assets/images/furniture-noma-chair.png',
-    hoverImage: null,
-    alt: 'Baithak Noma Lounge Chair',
-    href: '/furniture/noma-chair',
-  },
-  {
-    name: 'Arden Dining',
-    category: 'Dining',
-    imagePath: '../assets/images/furniture-arden-dining.jpg',
-    hoverImage: null,
-    alt: 'Baithak Arden Dining furniture',
-    href: '/furniture/arden-dining',
-  },
-  {
-    name: 'Mira Bed',
-    category: 'Upholstered Bed',
-    imagePath: '../assets/images/furniture-mira-bed.png',
-    hoverImage: null,
-    alt: 'Baithak Mira upholstered bed',
-    href: '/furniture/mira-bed',
-  },
-];
+import { products } from '../data/products.js';
 
 const categories = [
   ['Sofas', '/sofas'],
@@ -80,7 +40,7 @@ function FeaturedFurniture() {
 
         <div className="featured-furniture__grid">
           {products.map((product, index) => {
-            const imageSource = furnitureImages[product.imagePath];
+            const imageSource = product.heroImage;
 
             return (
               <a

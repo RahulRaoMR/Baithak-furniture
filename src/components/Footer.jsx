@@ -4,6 +4,7 @@ import {
   AtSign,
   Facebook,
   Instagram,
+  Mail,
   MapPin,
   MessageCircle,
   Phone,
@@ -15,7 +16,7 @@ import Logo from './Logo.jsx';
 const exploreLinks = [
   ['Furniture', '/furniture'],
   ['Collections', '/collections'],
-  ['Customise', '/custom'],
+  ['Customise', '/customise'],
   ['Our Work', '/our-work'],
   ['About', '/about'],
   ['Contact', '/contact'],
@@ -51,6 +52,14 @@ function Footer() {
 
           <section className="footer-column footer-contact" aria-labelledby="footer-contact-title">
             <h2 id="footer-contact-title">Contact</h2>
+
+            <div className="footer-contact-item">
+              <Mail size={18} strokeWidth={1.7} aria-hidden="true" />
+              <div>
+                <span>Email Us</span>
+                <a href={contactInfo.email.href}>{contactInfo.email.display}</a>
+              </div>
+            </div>
 
             <div className="footer-contact-item">
               <Phone size={18} strokeWidth={1.7} aria-hidden="true" />
