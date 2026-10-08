@@ -8,6 +8,7 @@ import AboutPage from './pages/AboutPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import ProjectDetailPage from './pages/ProjectDetailPage.jsx';
+import PolicyPage from './pages/PolicyPage.jsx';
 import WhatsAppButton from './components/WhatsAppButton.jsx';
 import { furnitureCategories } from './data/furniture.js';
 import { collectionPages } from './data/collections.js';
@@ -36,6 +37,8 @@ function App() {
       case '/collections': page = <CollectionsPage />; break;
       case '/customise': page = <CustomisePage />; break;
       case '/about': page = <AboutPage />; break;
+      case '/privacy': page = <PolicyPage type="privacy" />; break;
+      case '/terms': page = <PolicyPage type="terms" />; break;
       default: page = <NotFoundPage />;
     }
   }
