@@ -4,7 +4,7 @@ import { contactInfo } from '../data/contact.js';
 import { normalizeIndianPhone } from '../utils/enquiry.js';
 import useDialogFocus from '../hooks/useDialogFocus.js';
 
-function WhatsAppLogo({ size = 28, fullSize = false }) {
+export function WhatsAppLogo({ size = 28, fullSize = false }) {
   return (
     <svg
       width={size}
