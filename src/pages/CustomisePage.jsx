@@ -6,7 +6,6 @@ import '../styles/customise-page.css';
 
 function CustomisePage() {
   useEffect(() => {
-    document.title = 'Customise Your Furniture | Baithak';
     window.scrollTo(0, 0);
   }, []);
 

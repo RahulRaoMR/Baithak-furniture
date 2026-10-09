@@ -1,10 +1,8 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { ArrowRight } from 'lucide-react';
 
-const categoryImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const categoryImages = imageSources;
 
 const categories = [
   {
@@ -52,12 +50,11 @@ function CategoryCards() {
                 id={category.id}
                 key={accessibleTitle}
                 href={category.href}
-                aria-label={`Explore ${accessibleTitle}`}
               >
                 <div className="category-image-wrap">
                   <span className="category-image-fallback" aria-hidden="true" />
                   {imageSource && (
-                    <img
+                    <ResponsiveImage sizes="(max-width: 767px) 85vw, (max-width: 1023px) 50vw, 25vw"
                       className="category-image"
                       src={imageSource}
                       alt={category.imageAlt}

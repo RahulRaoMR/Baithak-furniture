@@ -1,3 +1,4 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { collections } from '../data/collections.js';
 
@@ -43,16 +44,15 @@ function Collections({ standalone = false }) {
                 className={`collections__item collections__item--${index + 1}`}
                 href={collection.href}
                 key={collection.title}
-                aria-label={`Explore ${standalone ? `${collection.label} Collection` : collection.title}`}
               >
                 <span className="collections__media">
                   <span className="collections__image-fallback" aria-hidden="true" />
                   {imageSource && (
-                    <img
+                    <ResponsiveImage
                       className="collections__image"
                       src={imageSource}
                       alt={collection.alt}
-                      loading="lazy"
+                      loading={standalone && index < 2 ? 'eager' : 'lazy'}
                       decoding="async"
                       onError={(event) => {
                         event.currentTarget.hidden = true;

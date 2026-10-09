@@ -1,23 +1,41 @@
+import { lazy, Suspense } from 'react';
 import Home from './pages/Home.jsx';
-import SofaCollection from './pages/SofaCollection.jsx';
-import PortfolioCollection from './pages/PortfolioCollection.jsx';
-import ContactPage from './pages/ContactPage.jsx';
-import CollectionsPage from './pages/CollectionsPage.jsx';
-import CustomisePage from './pages/CustomisePage.jsx';
-import AboutPage from './pages/AboutPage.jsx';
-import NotFoundPage from './pages/NotFoundPage.jsx';
-import ProductDetailPage from './pages/ProductDetailPage.jsx';
-import ProjectDetailPage from './pages/ProjectDetailPage.jsx';
-import PolicyPage from './pages/PolicyPage.jsx';
+import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
 import WhatsAppButton from './components/WhatsAppButton.jsx';
-import { furnitureCategories } from './data/furniture.js';
-import { collectionPages } from './data/collections.js';
+import usePageMeta from './hooks/usePageMeta.js';
+import { publicRoutes } from './data/routes.js';
 import { getProductBySlug } from './data/products.js';
 import { getProjectBySlug } from './data/projects.js';
 
+const SofaCollection = lazy(() => import('./pages/SofaCollection.jsx'));
+const GalleryRoute = lazy(() => import('./pages/GalleryRoute.jsx'));
+const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
+const CollectionsPage = lazy(() => import('./pages/CollectionsPage.jsx'));
+const CustomisePage = lazy(() => import('./pages/CustomisePage.jsx'));
+const AboutPage = lazy(() => import('./pages/AboutPage.jsx'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage.jsx'));
+const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage.jsx'));
+const MaterialsPage = lazy(() => import('./pages/MaterialsPage.jsx'));
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage.jsx'));
+const TermsPage = lazy(() => import('./pages/TermsPage.jsx'));
+
+function RouteLoading() {
+  return (
+    <>
+      <Navbar />
+      <main id="main-content" className="route-loading" aria-busy="true" tabIndex={-1}>
+        <p role="status">Loading...</p>
+      </main>
+      <Footer />
+    </>
+  );
+}
+
 function App() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  const category = furnitureCategories[path] || collectionPages[path];
+  usePageMeta(path);
   const productMatch = path.match(/^\/furniture\/([^/]+)$/);
   const product = productMatch ? getProductBySlug(productMatch[1]) : undefined;
   const projectMatch = path.match(/^\/our-work\/([^/]+)$/);
@@ -26,26 +44,24 @@ function App() {
 
   if (product) page = <ProductDetailPage product={product} />;
   else if (project) page = <ProjectDetailPage project={project} key={project.slug} />;
-  else if (category) page = <PortfolioCollection variant={category.slug} category={category} />;
   else {
     switch (path) {
       case '/': page = <Home />; break;
       case '/sofas': page = <SofaCollection />; break;
-      case '/custom-woodwork': page = <PortfolioCollection variant="woodwork" />; break;
-      case '/our-work': page = <PortfolioCollection variant="work" />; break;
       case '/contact': page = <ContactPage />; break;
       case '/collections': page = <CollectionsPage />; break;
       case '/customise': page = <CustomisePage />; break;
       case '/about': page = <AboutPage />; break;
-      case '/privacy': page = <PolicyPage type="privacy" />; break;
-      case '/terms': page = <PolicyPage type="terms" />; break;
-      default: page = <NotFoundPage />;
+      case '/materials': page = <MaterialsPage />; break;
+      case '/privacy': page = <PrivacyPage />; break;
+      case '/terms': page = <TermsPage />; break;
+      default: page = publicRoutes.includes(path) ? <GalleryRoute path={path} /> : <NotFoundPage />;
     }
   }
 
   return (
     <>
-      {page}
+      <Suspense fallback={<RouteLoading />}>{page}</Suspense>
       <WhatsAppButton />
     </>
   );

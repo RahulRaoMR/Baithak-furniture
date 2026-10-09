@@ -1,3 +1,5 @@
+import ResponsiveImage from '../components/ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
@@ -15,7 +17,9 @@ import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import Logo from '../components/Logo.jsx';
 import { contactInfo } from '../data/contact.js';
-import contactHeroImage from '../assets/images/gallery/studio-003.png';
+import { normalizeIndianPhone } from '../utils/enquiry.js';
+
+const contactHeroImage = imageSources['../assets/images/gallery/studio-003.png'];
 
 const socialLinks = [
   ['Instagram', contactInfo.socials.instagram, Instagram],
@@ -34,7 +38,6 @@ function ContactPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = 'Contact Baithak | Custom Furniture Bengaluru';
     return () => clearTimeout(submissionTimerRef.current);
   }, []);
 
@@ -47,18 +50,11 @@ function ContactPage() {
     const phone = String(data.get('phone') || '').trim();
     const project = String(data.get('project') || '').trim();
     const details = String(data.get('message') || '').trim();
-    const digits = phone.replace(/\D/g, '');
-    const nationalNumber = digits.length === 12 && digits.startsWith('91')
-      ? digits.slice(2)
-      : digits.length === 11 && digits.startsWith('0') ? digits.slice(1) : digits;
-    const phoneIsValid = /^\+?[\d\s().-]+$/.test(phone)
-      && (!phone.startsWith('+') || (digits.length === 12 && digits.startsWith('91')))
-      && /^[2-9]\d{9}$/.test(nationalNumber)
-      && !/^(\d)\1{9}$/.test(nationalNumber);
+    const normalizedPhone = normalizeIndianPhone(phone);
     const nextErrors = {};
 
     if (name.length < 2) nextErrors.name = 'Please enter your name (at least 2 characters).';
-    if (!phoneIsValid) nextErrors.phone = 'Please enter a valid 10-digit Indian phone number, with or without +91.';
+    if (!normalizedPhone) nextErrors.phone = 'Please enter a valid 10-digit Indian phone number, with or without +91.';
     if (!project) nextErrors.project = 'Please choose a furniture type.';
     if (details.length < 2) nextErrors.message = 'Please add a short description of your project.';
 
@@ -72,13 +68,13 @@ function ContactPage() {
     }
 
     event.currentTarget.elements.namedItem('name').value = name;
-    event.currentTarget.elements.namedItem('phone').value = `+91${nationalNumber}`;
+    event.currentTarget.elements.namedItem('phone').value = normalizedPhone;
     event.currentTarget.elements.namedItem('message').value = details;
     const message = [
       'Hello Baithak, I would like to discuss a furniture project.',
       '',
       `Name: ${name}`,
-      `Phone: +91${nationalNumber}`,
+      `Phone: ${normalizedPhone}`,
       `Project: ${project}`,
       `Message: ${details}`,
     ].join('\n');
@@ -113,7 +109,7 @@ function ContactPage() {
       <Navbar />
       <main className="contact-page" id="main-content" tabIndex={-1}>
         <section className="contact-hero" aria-labelledby="contact-title">
-          <img className="contact-hero__image" src={contactHeroImage} alt="Baithak furniture collection" />
+          <ResponsiveImage loading="eager" className="contact-hero__image" src={contactHeroImage} sizes="(max-width: 1024px) 1900px, 100vw" alt="Baithak furniture collection" fetchPriority="high" />
           <div className="contact-hero__overlay" aria-hidden="true" />
           <div className="container contact-hero__content">
             <Logo className="contact-hero__logo" />

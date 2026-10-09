@@ -1,3 +1,4 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { projects } from '../data/projects.js';
 
@@ -31,12 +32,11 @@ function FeaturedProjects() {
                 className={`featured-projects__item featured-projects__item--${index + 1}`}
                 href={project.href}
                 key={project.number}
-                aria-label={`View ${projectTitle} project`}
               >
                 <span className="featured-projects__media">
                   <span className="featured-projects__image-fallback" aria-hidden="true" />
                   {imageSource && (
-                    <img
+                    <ResponsiveImage
                       className="featured-projects__image"
                       src={imageSource}
                       alt={project.imageAlt}

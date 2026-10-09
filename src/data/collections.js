@@ -1,10 +1,6 @@
-import { furnitureCategories } from './furniture.js';
+import { imageSources } from '../utils/images.js';
 
-const collectionImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const collectionImages = imageSources;
 
 const collectionDefinitions = [
   {
@@ -55,7 +51,7 @@ const collectionDefinitions = [
   {
     slug: 'bespoke',
     label: 'Bespoke',
-    title: 'Custom Woodwork',
+    title: 'Custom Furniture',
     description: 'Designed around the architecture, made around the way you use it.',
     action: 'Explore Custom Work',
     imagePath: '../assets/images/collection-woodwork.jpg',
@@ -69,19 +65,4 @@ export const collections = collectionDefinitions.map((collection) => ({
   ...collection,
   href: `/collections/${collection.slug}`,
   image: collectionImages[collection.imagePath],
-}));
-
-export const collectionPages = Object.fromEntries(collections.map((collection) => {
-  const images = collection.furniturePaths.flatMap((path) => furnitureCategories[path].images);
-  if (collection.slug === 'living' || collection.slug === 'bespoke') {
-    images.unshift({ src: collection.image, label: collection.title });
-  }
-
-  return [collection.href, {
-    slug: `collection-${collection.slug}`,
-    group: 'Collections',
-    title: `${collection.label} Collection`,
-    intro: collection.intro,
-    images: [...new Map(images.map((image) => [image.src, image])).values()],
-  }];
 }));

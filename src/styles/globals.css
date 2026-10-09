@@ -6,6 +6,11 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom));
+}
+
+#root {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom));
 }
 
 section[id],
@@ -435,6 +440,10 @@ h3 {
 }
 
 .hero-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 58%;
   background-color: #886b58;
   background-position: center 58%;
   background-repeat: no-repeat;
@@ -1245,6 +1254,7 @@ h3 {
 
 .customisation__tab:focus-visible,
 .customisation__option:focus-visible,
+.craftsmanship__details:focus-visible,
 .customisation__cta a:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
@@ -1256,7 +1266,8 @@ h3 {
   animation: customisation-content-in 320ms both ease-out;
 }
 
-.customisation__content h3 {
+.customisation__option-heading {
+  max-width: none;
   color: var(--color-text);
   font-family: var(--font-editorial);
   font-size: clamp(2rem, 3.2vw, 2.65rem);
@@ -2758,6 +2769,47 @@ h3 {
   transition:
     color var(--transition),
     transform var(--transition);
+}
+
+.responsive-picture,
+.whatsapp-launcher {
+  display: contents;
+}
+
+.route-loading {
+  display: grid;
+  min-height: calc(100svh - var(--navbar-height));
+  place-items: center;
+}
+
+@media (max-width: 1023px) {
+  html {
+    scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom));
+  }
+
+  #root {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+
+  .whatsapp-launcher {
+    position: fixed;
+    z-index: 90;
+    inset: auto 0 0;
+    display: block;
+    height: calc(76px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-soft);
+    pointer-events: none;
+  }
+
+  .whatsapp-launcher .whatsapp-button {
+    position: absolute;
+    right: 16px;
+    bottom: calc(13px + env(safe-area-inset-bottom));
+    width: 50px;
+    height: 50px;
+    pointer-events: auto;
+  }
 }
 
 .whatsapp-button > svg {
@@ -4338,6 +4390,7 @@ h3 {
 
   .hero-media {
     background-position: 62% center;
+    object-position: 62% center;
   }
 
   .hero-overlay {
@@ -4833,6 +4886,7 @@ h3 {
 
   .hero-media {
     background-position: 64% center;
+    object-position: 64% center;
   }
 
   .hero-overlay {

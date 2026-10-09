@@ -1,10 +1,8 @@
-import miraBedImage from '../assets/images/furniture-mira-bed.png';
+import { imageSources } from '../utils/galleryImages.js';
 
-const galleryImages = import.meta.glob('../assets/images/gallery/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const miraBedImage = imageSources['../assets/images/furniture-mira-bed.png'];
+
+const galleryImages = Object.fromEntries(Object.entries(imageSources).filter(([file]) => file.startsWith('../assets/images/gallery/')));
 
 const categoryDefinitions = [
   {
@@ -42,7 +40,7 @@ const categoryDefinitions = [
     archiveOverrides: { 57: miraBedImage },
     studio: [5],
     archive: [
-      10, 12, 39, 40, 42, 47, 48, 49, 50, 51, 52, 55, 56, 57, 58, 60, 71, 75, 76,
+      10, 12, 39, 40, 42, 47, 48, 49, 50, 51, 52, 55, 56, 57, 58, 71, 75, 76,
       77, 78, 79, 82, 83, 84, 85, 97, 99, 109, 110, 111, 112, 113, 114, 115, 121,
       122, 133,
     ],
@@ -81,10 +79,8 @@ const categoryDefinitions = [
     studio: [11],
     archive: [45],
     additionalImages: [
-      'coffee-table-001.jpeg', 'coffee-table-002.jpeg', 'coffee-table-003.jpeg',
-      'coffee-table-004.jpeg', 'coffee-table-005.jpeg', 'coffee-table-006.jpeg',
-      'coffee-table-007.jpeg', 'coffee-table-008.jpeg', 'coffee-table-009.jpeg',
-      'coffee-table-010.jpeg',
+      'coffee-table-001.jpeg', 'coffee-table-003.jpeg', 'coffee-table-004.jpeg',
+      'coffee-table-006.jpeg', 'coffee-table-007.jpeg', 'coffee-table-009.jpeg',
     ],
   },
   {
@@ -95,6 +91,8 @@ const categoryDefinitions = [
     additionalImages: [
       'side-table-001.jpeg', 'side-table-002.jpeg', 'side-table-003.jpeg',
       'side-table-004.jpeg', 'side-table-005.jpeg', 'side-table-006.jpeg',
+      'coffee-table-002.jpeg', 'coffee-table-005.jpeg', 'coffee-table-008.jpeg',
+      'coffee-table-010.jpeg',
     ],
   },
   {

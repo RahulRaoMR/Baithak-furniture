@@ -1,16 +1,16 @@
+import ResponsiveImage from '../components/ResponsiveImage.jsx';
+import { imageSources } from '../utils/galleryImages.js';
+import { galleryImageSizes } from '../utils/images.js';
 import { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import useDialogFocus from '../hooks/useDialogFocus.js';
-import miraBedImage from '../assets/images/furniture-mira-bed.png';
-import silverBedImage from '../assets/images/collection-beds.jpg';
 
-const galleryImages = import.meta.glob('../assets/images/gallery/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const miraBedImage = imageSources['../assets/images/furniture-mira-bed.png'];
+const silverBedImage = imageSources['../assets/images/collection-beds.jpg'];
+
+const galleryImages = Object.fromEntries(Object.entries(imageSources).filter(([file]) => file.startsWith('../assets/images/gallery/')));
 
 const woodworkIds = [
   98, 100, 101, 102, 103, 84, 97, 99, 10, 12, 39, 40, 42, 47, 48, 49, 50, 51, 52,
@@ -56,10 +56,10 @@ const pageContent = {
     title: 'Built into the way your room works.',
     intro:
       'Explore upholstered beds, headboards, wall treatments and made-to-measure details shaped around the architecture of each room.',
-    sectionEyebrow: 'Measured, made and installed',
+    sectionEyebrow: 'Beds, headboards and wall details',
     sectionTitle: 'Custom woodwork',
     viewerTitle: 'Custom woodwork',
-    countLabel: 'completed details',
+    countLabel: 'photographs',
     ctaPrompt: 'Have a wall, bed or room detail in mind?',
     ctaTitle: 'Let us build it around you.',
     ctaLabel: 'Discuss My Project',
@@ -69,7 +69,7 @@ const pageContent = {
     eyebrow: 'The Baithak portfolio',
     title: 'Furniture made for real spaces.',
     intro:
-      'A broad view of furniture developed in the studio, built in the workshop and placed in homes, offices and hospitality spaces.',
+      'A collection of furniture photographs, from workshop views to room settings.',
     sectionEyebrow: 'From workshop to home',
     sectionTitle: 'Our work',
     viewerTitle: 'Baithak projects',
@@ -103,7 +103,6 @@ function PortfolioCollection({ variant, category }) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = content.documentTitle;
   }, [content.documentTitle]);
 
   useEffect(() => {
@@ -161,7 +160,7 @@ function PortfolioCollection({ variant, category }) {
               onClick={() => setSelectedIndex(0)}
               aria-label={`Open featured ${content.viewerTitle.toLowerCase()} image`}
             >
-              <img src={images[0].src} alt={imageDescription(images[0], 0)} />
+              <ResponsiveImage loading="eager" src={images[0].src} sizes="(max-width: 1024px) 1900px, 100vw" alt={imageDescription(images[0], 0)} fetchPriority="high" />
             </button>
             <div className="container sofa-hero__copy">
               <p>{content.eyebrow}</p>
@@ -201,12 +200,13 @@ function PortfolioCollection({ variant, category }) {
                       type="button"
                       key={image.src}
                       onClick={() => setSelectedIndex(imageIndex)}
-                      aria-label={`Open image ${imageIndex + 1} of ${images.length}`}
+                      title="Open full photograph"
                     >
-                      <img
+                      <ResponsiveImage
                         src={image.src}
+                        sizes={galleryImageSizes(image.src)}
                         alt={imageDescription(image, imageIndex)}
-                        loading="lazy"
+                        loading={category && index < 3 ? 'eager' : 'lazy'}
                       />
                       <span>
                         <span>{String(imageIndex + 1).padStart(3, '0')}</span>
@@ -262,8 +262,8 @@ function PortfolioCollection({ variant, category }) {
           >
             <ChevronLeft size={25} strokeWidth={1.6} />
           </button>
-          <img
-            className="archive-viewer__image"
+          <ResponsiveImage
+            className="archive-viewer__image" loading="eager"
             src={images[selectedIndex].src}
             alt={imageDescription(images[selectedIndex], selectedIndex)}
             onClick={(event) => event.stopPropagation()}

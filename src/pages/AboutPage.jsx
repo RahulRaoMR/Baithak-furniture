@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import ResponsiveImage from '../components/ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { Armchair, ArrowRight, Layers, MapPin, Ruler } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 import { contactInfo } from '../data/contact.js';
-import roomImage from '../assets/images/brand-story.png';
-import workshopImage from '../assets/images/craftsmanship-upholstery.jpg';
-import finishedImage from '../assets/images/customisation-main.png';
+
+const roomImage = imageSources['../assets/images/brand-story.png'];
+const workshopImage = imageSources['../assets/images/craftsmanship-upholstery.jpg'];
+const finishedImage = imageSources['../assets/images/customisation-main.png'];
 
 const principles = [
   {
@@ -26,17 +28,13 @@ const principles = [
 ];
 
 function AboutPage() {
-  useEffect(() => {
-    document.title = 'About Baithak | Furniture With Your Story in It';
-  }, []);
-
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to main content</a>
       <Navbar />
       <main className="about-page" id="main-content" tabIndex="-1">
         <section className="about-hero" aria-labelledby="about-title">
-          <img
+          <ResponsiveImage loading="eager" sizes="(max-width: 1024px) 1900px, 100vw"
             className="about-hero__image"
             src={roomImage}
             alt="Green upholstered Baithak sofa and chairs in a finished living room"
@@ -119,7 +117,7 @@ function AboutPage() {
             </header>
             <div className="about-craft__images">
               <figure>
-                <img
+                <ResponsiveImage
                   src={workshopImage}
                   alt="Blue upholstered headboard and bed frame in the Baithak workshop"
                   loading="lazy"
@@ -128,7 +126,7 @@ function AboutPage() {
                 <figcaption>Upholstery and finishing, in the workshop.</figcaption>
               </figure>
               <figure>
-                <img
+                <ResponsiveImage
                   src={finishedImage}
                   alt="Baithak upholstered sofa and armchairs with wooden detailing in a living room"
                   loading="lazy"

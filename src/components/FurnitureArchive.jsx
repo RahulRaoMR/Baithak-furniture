@@ -1,11 +1,9 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
+import { imageSources } from '../utils/galleryImages.js';
 import { useEffect, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-const galleryImages = import.meta.glob('../assets/images/gallery/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const galleryImages = Object.fromEntries(Object.entries(imageSources).filter(([file]) => file.startsWith('../assets/images/gallery/')));
 
 const images = Object.entries(galleryImages)
   .sort(([pathA], [pathB]) => {
@@ -85,7 +83,7 @@ function FurnitureArchive() {
               onClick={() => setSelectedIndex(index)}
               aria-label={`Open image ${index + 1} of ${images.length}`}
             >
-              <img src={image.src} alt={image.alt} loading="lazy" />
+              <ResponsiveImage src={image.src} alt={image.alt} loading="lazy" />
               <span className="furniture-archive__caption">
                 <span>{String(index + 1).padStart(3, '0')}</span>
                 <span>{image.label}</span>
@@ -135,8 +133,8 @@ function FurnitureArchive() {
             <ChevronLeft size={25} strokeWidth={1.6} />
           </button>
 
-          <img
-            className="archive-viewer__image"
+          <ResponsiveImage
+            className="archive-viewer__image" loading="eager"
             src={images[selectedIndex].src}
             alt={images[selectedIndex].alt}
             onClick={(event) => event.stopPropagation()}

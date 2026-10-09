@@ -1,12 +1,10 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { contactInfo } from '../data/contact';
 
-const customisationImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const customisationImages = imageSources;
 
 const customisationImage = customisationImages['../assets/images/customisation-main.png'];
 
@@ -63,6 +61,7 @@ function Customisation({ standalone = false }) {
   const [selections, setSelections] = useState(initialSelections);
   const activeOption = customisationOptions.find((option) => option.id === activeTab);
   const Heading = standalone ? 'h1' : 'h2';
+  const OptionHeading = standalone ? 'h2' : 'h3';
   const enquiryMessage = [
     'Hi Baithak, I would like to design a custom furniture piece.',
     ...customisationOptions.map((option) => `${option.label}: ${selections[option.id]}`),
@@ -115,7 +114,8 @@ function Customisation({ standalone = false }) {
           <div className="customisation__visual">
             <span className="customisation__image-fallback" aria-hidden="true" />
             {customisationImage && (
-              <img
+              <ResponsiveImage
+                sizes="(max-width: 767px) 1100px, 100vw"
                 className="customisation__image"
                 src={customisationImage}
                 alt="Customisable Baithak furniture in a considered interior"
@@ -158,7 +158,7 @@ function Customisation({ standalone = false }) {
               tabIndex={0}
               key={activeOption.id}
             >
-              <h3>{activeOption.heading}</h3>
+              <OptionHeading className="customisation__option-heading">{activeOption.heading}</OptionHeading>
               <p>{activeOption.description}</p>
 
               <div className="customisation__options" aria-label={`${activeOption.label} choices`}>

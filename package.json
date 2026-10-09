@@ -4,16 +4,22 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "test": "node --test scripts/enquiry.test.mjs",
+    "images:build": "node scripts/optimize-images.mjs",
+    "predev": "npm run images:build",
+    "prebuild": "npm run images:build",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
-    "vite": "^7.1.0",
+    "lucide-react": "^0.468.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "lucide-react": "^0.468.0"
+    "vite": "^7.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
 }

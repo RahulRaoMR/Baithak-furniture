@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
 import { contactInfo } from '../data/contact.js';
+import { normalizeIndianPhone } from '../utils/enquiry.js';
+import useDialogFocus from '../hooks/useDialogFocus.js';
 
 function WhatsAppLogo({ size = 28, fullSize = false }) {
   return (
@@ -10,6 +12,7 @@ function WhatsAppLogo({ size = 28, fullSize = false }) {
       viewBox={fullSize ? '3 3 26 26' : '0 0 32 32'}
       fill="none"
       aria-hidden="true"
+      focusable="false"
     >
       <path
         d="M16 4.25a11.5 11.5 0 0 0-9.88 17.4L4.5 27.5l5.98-1.57A11.5 11.5 0 1 0 16 4.25Z"
@@ -32,13 +35,12 @@ function WhatsAppButton() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const triggerRef = useRef(null);
-  const dialogRef = useRef(null);
+  const dialogRef = useDialogFocus(isOpen);
   const firstFieldRef = useRef(null);
   const submittingRef = useRef(false);
 
   const closeDialog = () => {
     setIsOpen(false);
-    requestAnimationFrame(() => triggerRef.current?.focus());
   };
 
   const openDialog = () => {
@@ -50,39 +52,12 @@ function WhatsAppButton() {
 
   useEffect(() => {
     if (!isOpen) return undefined;
-
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        closeDialog();
-        return;
-      }
-
-      if (event.key !== 'Tab') return;
-      const focusable = dialogRef.current?.querySelectorAll(
-        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]',
-      );
-      if (!focusable?.length) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
+      if (event.key === 'Escape') closeDialog();
     };
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     document.addEventListener('keydown', handleKeyDown);
-    requestAnimationFrame(() => firstFieldRef.current?.focus());
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener('keydown', handleKeyDown);
-    };
+    firstFieldRef.current?.focus({ preventScroll: true });
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
 
   const handleSubmit = (event) => {
@@ -94,15 +69,11 @@ function WhatsAppButton() {
     const phone = String(data.get('phone') || '').trim();
     const project = String(data.get('project') || '').trim();
     const details = String(data.get('message') || '').trim();
-    const phoneDigits = phone.replace(/\D/g, '');
-    const phoneIsValid =
-      phoneDigits.length === 10 ||
-      (phoneDigits.length === 11 && phoneDigits.startsWith('0')) ||
-      (phoneDigits.length === 12 && phoneDigits.startsWith('91'));
+    const normalizedPhone = normalizeIndianPhone(phone);
     const nextErrors = {};
 
     if (name.length < 2) nextErrors.name = 'Please enter your name.';
-    if (!phoneIsValid) nextErrors.phone = 'Please enter a valid phone number.';
+    if (!normalizedPhone) nextErrors.phone = 'Please enter a valid phone number.';
     if (!project) nextErrors.project = 'Please choose a furniture type.';
 
     if (Object.keys(nextErrors).length > 0) {
@@ -120,7 +91,7 @@ function WhatsAppButton() {
       'I would like to enquire about furniture.',
       '',
       `Name: ${name}`,
-      `Phone: ${phone}`,
+      `Phone: ${normalizedPhone}`,
       `Furniture: ${project}`,
       ...(details ? ['', 'Project details:', details] : []),
       '',
@@ -138,23 +109,28 @@ function WhatsAppButton() {
 
   return (
     <>
-      <button
-        className="whatsapp-button"
-        type="button"
-        aria-label="Start a WhatsApp enquiry with Baithak"
-        title="WhatsApp enquiry"
-        aria-haspopup="dialog"
-        aria-expanded={isOpen}
-        onClick={openDialog}
-        ref={triggerRef}
-      >
-        <WhatsAppLogo size={56} fullSize />
-      </button>
+      <div className="whatsapp-launcher">
+        <button
+          className="whatsapp-button"
+          type="button"
+          aria-label="Chat with Baithak on WhatsApp"
+          title="WhatsApp enquiry"
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
+          aria-controls={isOpen ? 'whatsapp-enquiry-dialog' : undefined}
+          onClick={openDialog}
+          ref={triggerRef}
+        >
+          <WhatsAppLogo size={56} fullSize />
+        </button>
+      </div>
 
       {isOpen && (
         <div className="whatsapp-enquiry" role="presentation" onMouseDown={closeDialog}>
           <section
             className="whatsapp-enquiry__dialog"
+            id="whatsapp-enquiry-dialog"
+            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="whatsapp-enquiry-title"

@@ -1,0 +1,253 @@
+.materials-page {
+  background: #fff;
+}
+
+.materials-page h1,
+.materials-page h2,
+.materials-page p,
+.materials-page a {
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.materials-breadcrumb {
+  padding-block: 1.5rem;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+}
+
+.materials-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.materials-breadcrumb li + li::before {
+  content: '/';
+  margin-right: 0.65rem;
+}
+
+.materials-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 520px;
+  color: #fff;
+  background: #24312c;
+}
+
+.materials-hero__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.materials-hero::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.05));
+}
+
+.materials-hero__copy {
+  position: relative;
+  z-index: 1;
+  padding-block: 3rem;
+}
+
+.materials-page__eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-accent-dark);
+}
+
+.materials-page__eyebrow span {
+  margin-right: 0.75rem;
+}
+
+.materials-hero .materials-page__eyebrow {
+  color: #ffcfaa;
+}
+
+.materials-hero h1 {
+  margin-block: 1rem 1.5rem;
+  font-size: 3.5rem;
+  line-height: 1.1;
+}
+
+.materials-hero__copy > p:last-child {
+  max-width: 480px;
+  line-height: 1.8;
+}
+
+.materials-principle {
+  padding-block: 4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.materials-principle__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 5rem;
+  align-items: center;
+}
+
+.materials-principle:nth-of-type(3) .materials-principle__copy {
+  order: 2;
+}
+
+.materials-page h2 {
+  margin-block: 1rem 1.5rem;
+  font-size: 2.5rem;
+  line-height: 1.15;
+}
+
+.materials-principle__copy > p:last-child,
+.materials-direction__layout > p {
+  max-width: 480px;
+  color: var(--color-muted);
+  line-height: 1.8;
+}
+
+.materials-principle__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.materials-principle__image--02 {
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  background: #f2f4f2;
+}
+
+.materials-direction {
+  padding-block: 4rem;
+  background: #f2f4f2;
+}
+
+.materials-direction__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 5rem;
+}
+
+.materials-direction h2 {
+  margin-bottom: 0;
+}
+
+.materials-enquiry {
+  padding-block: 4rem;
+  background: var(--color-footer);
+  color: #fff;
+}
+
+.materials-enquiry__layout {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.materials-enquiry h2 {
+  margin: 0;
+}
+
+.materials-enquiry__actions {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  max-width: 100%;
+}
+
+.materials-enquiry__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.materials-page svg {
+  flex-shrink: 0;
+}
+
+.materials-page a:focus-visible {
+  outline: 3px solid var(--color-accent-dark);
+  outline-offset: 4px;
+}
+
+.materials-enquiry a:focus-visible {
+  outline-color: #ffcfaa;
+}
+
+@media (max-width: 900px) {
+  .materials-principle__layout,
+  .materials-direction__layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .materials-principle:nth-of-type(3) .materials-principle__copy {
+    order: 0;
+  }
+
+  .materials-principle__image--02 {
+    max-height: 600px;
+  }
+}
+
+@media (max-width: 600px) {
+  .materials-breadcrumb {
+    padding-block: 1.25rem;
+  }
+
+  .materials-hero {
+    min-height: 480px;
+  }
+
+  .materials-hero::after {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .materials-hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .materials-hero__copy {
+    padding-right: 3rem;
+  }
+
+  .materials-page h2 {
+    font-size: 2rem;
+  }
+
+  .materials-principle__copy,
+  .materials-direction__layout > div,
+  .materials-direction__layout > p,
+  .materials-enquiry h2 {
+    padding-right: 3.5rem;
+  }
+
+  .materials-principle,
+  .materials-direction,
+  .materials-enquiry {
+    padding-block: 3rem;
+  }
+
+  .materials-enquiry__actions,
+  .materials-enquiry .button {
+    width: 100%;
+  }
+}

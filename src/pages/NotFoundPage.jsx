@@ -1,13 +1,8 @@
-import { useEffect } from 'react';
 import { ArrowRight, Home, MessageCircle } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
 import Footer from '../components/Footer.jsx';
 
 function NotFoundPage() {
-  useEffect(() => {
-    document.title = 'Page Not Found | Baithak';
-  }, []);
-
   return (
     <>
       <a className="skip-link" href="#main-content">Skip to main content</a>

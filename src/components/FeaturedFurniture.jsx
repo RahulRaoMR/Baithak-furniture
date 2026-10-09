@@ -1,3 +1,4 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { products } from '../data/products.js';
 
@@ -16,7 +17,7 @@ function FeaturedFurniture() {
       <div className="container">
         <header className="featured-furniture__header">
           <div>
-            <p className="featured-furniture__eyebrow">New collection</p>
+            <p className="featured-furniture__eyebrow">Selected furniture</p>
             <h2 className="featured-furniture__title" id="featured-furniture-title">
               Made to take its place.
             </h2>
@@ -47,12 +48,11 @@ function FeaturedFurniture() {
                 className={`featured-furniture__product featured-furniture__product--${index + 1}`}
                 href={product.href}
                 key={product.name}
-                aria-label={`View ${product.name}`}
               >
                 <span className="featured-furniture__media">
                   <span className="featured-furniture__image-fallback" aria-hidden="true" />
                   {imageSource && (
-                    <img
+                    <ResponsiveImage sizes="(max-width: 767px) 85vw, (max-width: 1023px) 50vw, 25vw"
                       className="featured-furniture__image"
                       src={imageSource}
                       alt={product.alt}

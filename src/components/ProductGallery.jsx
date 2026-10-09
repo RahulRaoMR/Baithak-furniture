@@ -1,3 +1,4 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
 import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
 import useDialogFocus from '../hooks/useDialogFocus.js';
@@ -39,7 +40,7 @@ function ProductGallery({ product }) {
         title="Open full image"
         onClick={() => setIsOpen(true)}
       >
-        <img src={selectedImage.src} alt={selectedImage.alt} fetchPriority="high" decoding="async" />
+        <ResponsiveImage loading="eager" src={selectedImage.src} sizes="(max-width: 767px) 100vw, 55vw" alt={selectedImage.alt} fetchPriority="high" decoding="async" />
         <span className="product-gallery__zoom" aria-hidden="true"><ZoomIn size={20} /></span>
       </button>
 
@@ -53,7 +54,7 @@ function ProductGallery({ product }) {
               aria-pressed={selectedIndex === index}
               onClick={() => setSelectedIndex(index)}
             >
-              <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+              <ResponsiveImage src={image.src} alt={image.alt} loading="lazy" decoding="async" />
             </button>
           ))}
         </div>
@@ -88,7 +89,7 @@ function ProductGallery({ product }) {
               <ChevronLeft size={25} aria-hidden="true" />
             </button>
           )}
-          <img className="archive-viewer__image" src={selectedImage.src} alt={selectedImage.alt} decoding="async" />
+          <ResponsiveImage className="archive-viewer__image" loading="eager" src={selectedImage.src} alt={selectedImage.alt} decoding="async" />
           {images.length > 1 && (
             <button
               className="archive-viewer__nav archive-viewer__nav--next"

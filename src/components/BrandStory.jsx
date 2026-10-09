@@ -1,10 +1,8 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { ArrowRight } from 'lucide-react';
 
-const storyImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const storyImages = imageSources;
 
 const storyImage = storyImages['../assets/images/brand-story.png'];
 
@@ -41,7 +39,8 @@ function BrandStory() {
         <div className="brand-story__media">
           <span className="brand-story__image-fallback" aria-hidden="true" />
           {storyImage && (
-            <img
+            <ResponsiveImage
+              sizes="(max-width: 767px) 1100px, 100vw"
               className="brand-story__image"
               src={storyImage}
               alt="Baithak upholstered furniture arranged in a living room"

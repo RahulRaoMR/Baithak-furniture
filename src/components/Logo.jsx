@@ -5,7 +5,7 @@ function Logo({ className = '' }) {
 
   return (
     <span className={classes}>
-      <img src={logoSource} alt="Baithak" decoding="async" />
+      <img src={logoSource} alt="Baithak" width="614" height="406" loading="eager" decoding="async" />
     </span>
   );
 }

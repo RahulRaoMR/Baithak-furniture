@@ -4,6 +4,8 @@ import Footer from '../components/Footer.jsx';
 import { contactInfo } from '../data/contact.js';
 import '../styles/policy-page.css';
 
+// This policy is website copy and is not legal advice. Final legal
+// review should be completed before production launch.
 const policies = {
   privacy: {
     title: 'Privacy Policy',
@@ -35,7 +37,7 @@ const policies = {
         id: 'technical',
         title: 'Browser storage and technical information',
         paragraphs: [
-          'The current website does not use its own analytics or advertising scripts, or save enquiry details in cookies or browser storage. Form entries and customisation choices are held in the current page while you use it.',
+          'The current website does not intentionally use analytics or advertising tracking technologies, or save enquiry details in cookies or browser storage. Form entries and customisation choices are held in the current page while you use it.',
           'The hosting provider may process technical information such as an IP address, browser information and request logs to deliver and protect the website. Third-party services may use their own cookies or storage when you visit them.',
         ],
       },
@@ -119,7 +121,6 @@ function PolicyPage({ type }) {
   const policy = policies[type];
 
   useEffect(() => {
-    document.title = `${policy.title} | Baithak`;
     window.scrollTo(0, 0);
   }, [policy.title]);
 
@@ -130,12 +131,15 @@ function PolicyPage({ type }) {
       <main className="policy-page" id="main-content" tabIndex={-1}>
         <div className="container">
           <nav className="policy-page__breadcrumb" aria-label="Breadcrumb">
-            <a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{policy.title}</span>
+            <ol>
+              <li><a href="/">Home</a></li>
+              <li><span aria-current="page">{policy.title}</span></li>
+            </ol>
           </nav>
           <header className="policy-page__header">
             <h1>{policy.title}</h1>
             <p>{policy.introduction}</p>
-            <p className="policy-page__date">Last updated: <time dateTime="2026-10-08">8 October 2026</time></p>
+            <p className="policy-page__date">Last updated: <time dateTime="2026-10-09">9 October 2026</time></p>
           </header>
           <div className="policy-page__layout">
             <nav className="policy-page__contents" aria-label="On this page">

@@ -3,6 +3,7 @@ import { ChevronDown, MapPin, Menu, X } from 'lucide-react';
 import { contactInfo } from '../data/contact.js';
 import { collections } from '../data/collections.js';
 import Logo from './Logo.jsx';
+import useDialogFocus from '../hooks/useDialogFocus.js';
 
 const furnitureGroups = [
   {
@@ -58,21 +59,43 @@ const primaryLinks = [
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isFurnitureOpen, setIsFurnitureOpen] = useState(false);
+  const [furnitureFocusRequest, setFurnitureFocusRequest] = useState(0);
   const [mobileAccordion, setMobileAccordion] = useState(null);
   const menuToggleRef = useRef(null);
   const furnitureTriggerRef = useRef(null);
   const furnitureMenuRef = useRef(null);
   const furnitureCloseTimerRef = useRef(null);
   const furniturePinnedRef = useRef(false);
+  const furnitureKeyboardFocusRef = useRef(false);
+  const mobileDialogRef = useDialogFocus(isMenuOpen);
   const currentPath = window.location.pathname;
 
   const closeFurnitureMenu = () => {
     clearTimeout(furnitureCloseTimerRef.current);
     furniturePinnedRef.current = false;
+    furnitureKeyboardFocusRef.current = false;
     setIsFurnitureOpen(false);
   };
 
   useEffect(() => () => clearTimeout(furnitureCloseTimerRef.current), []);
+
+  useEffect(() => {
+    if (!isFurnitureOpen || !furnitureKeyboardFocusRef.current) return undefined;
+    // Wait for the opening visibility transition before moving keyboard focus.
+    let frame;
+    const focusWhenVisible = () => {
+      const link = furnitureMenuRef.current?.querySelector('a');
+      if (!link || !furnitureKeyboardFocusRef.current) return;
+      if (getComputedStyle(link).visibility !== 'visible') {
+        frame = requestAnimationFrame(focusWhenVisible);
+        return;
+      }
+      furnitureKeyboardFocusRef.current = false;
+      link.focus();
+    };
+    frame = requestAnimationFrame(focusWhenVisible);
+    return () => cancelAnimationFrame(frame);
+  }, [isFurnitureOpen, furnitureFocusRequest]);
 
   useEffect(() => {
     if (!isFurnitureOpen) return undefined;
@@ -101,12 +124,8 @@ function Navbar() {
 
   useEffect(() => {
     if (!isMenuOpen) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
+    document.querySelector('#mobile-navigation > a')?.focus();
+    return undefined;
   }, [isMenuOpen]);
 
   const closeMenu = () => {
@@ -126,7 +145,10 @@ function Navbar() {
   };
 
   return (
-    <header className="site-header">
+    <header className="site-header" ref={mobileDialogRef}
+      role={isMenuOpen ? 'dialog' : undefined}
+      aria-modal={isMenuOpen ? true : undefined}
+      aria-label={isMenuOpen ? 'Main menu' : undefined}>
       <nav className="container navbar" aria-label="Main navigation">
         <a className="brand-mark" href="/" aria-label="Baithak home">
           <Logo className="navbar-logo" />
@@ -167,15 +189,16 @@ function Navbar() {
                 event.preventDefault();
                 clearTimeout(furnitureCloseTimerRef.current);
                 furniturePinnedRef.current = true;
+                furnitureKeyboardFocusRef.current = true;
                 setIsFurnitureOpen(true);
-                requestAnimationFrame(() => furnitureMenuRef.current?.querySelector('a')?.focus());
+                setFurnitureFocusRequest((request) => request + 1);
               }}
               ref={furnitureTriggerRef}
             >
               Furniture
-              <ChevronDown size={15} aria-hidden="true" />
+              <ChevronDown size={15} aria-hidden="true" focusable="false" />
             </button>
-            <div className="nav-mega__menu" id="furniture-mega-menu">
+            <div className="nav-mega__menu" id="furniture-mega-menu" aria-hidden={!isFurnitureOpen} inert={!isFurnitureOpen}>
               <div className="container nav-mega__layout">
                 {furnitureGroups.map((group) => (
                   <div className="nav-mega__group" key={group.label}>
@@ -203,7 +226,7 @@ function Navbar() {
           href={contactInfo.address.mapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open Baithak showroom location in Google Maps"
+          aria-label="Location: Open Baithak showroom in Google Maps"
         >
           <MapPin size={18} strokeWidth={1.8} aria-hidden="true" /> Location
         </a>
@@ -217,7 +240,7 @@ function Navbar() {
           onClick={() => (isMenuOpen ? closeMenu() : setIsMenuOpen(true))}
           ref={menuToggleRef}
         >
-          {isMenuOpen ? <X size={23} strokeWidth={1.8} /> : <Menu size={23} strokeWidth={1.8} />}
+          {isMenuOpen ? <X size={23} strokeWidth={1.8} aria-hidden="true" focusable="false" /> : <Menu size={23} strokeWidth={1.8} aria-hidden="true" focusable="false" />}
         </button>
 
         <div
@@ -236,7 +259,7 @@ function Navbar() {
               aria-controls="mobile-furniture-links"
               onClick={() => toggleAccordion('furniture')}
             >
-              Furniture <ChevronDown size={17} aria-hidden="true" />
+              Furniture <ChevronDown size={17} aria-hidden="true" focusable="false" />
             </button>
             <div
               className={`mobile-accordion__panel${mobileAccordion === 'furniture' ? ' is-open' : ''}`}
@@ -259,7 +282,7 @@ function Navbar() {
               aria-controls="mobile-collection-links"
               onClick={() => toggleAccordion('collections')}
             >
-              Collections <ChevronDown size={17} aria-hidden="true" />
+              Collections <ChevronDown size={17} aria-hidden="true" focusable="false" />
             </button>
             <div
               className={`mobile-accordion__panel${mobileAccordion === 'collections' ? ' is-open' : ''}`}
@@ -286,7 +309,7 @@ function Navbar() {
             href={contactInfo.address.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open Baithak showroom location in Google Maps"
+            aria-label="Location: Open Baithak showroom in Google Maps"
             onClick={closeMenu}
           >
             <MapPin size={18} strokeWidth={1.8} aria-hidden="true" /> Location

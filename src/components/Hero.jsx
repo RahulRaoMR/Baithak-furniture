@@ -1,5 +1,8 @@
+import { imageSources } from '../utils/images.js';
+import ResponsiveImage from './ResponsiveImage.jsx';
 import { ArrowDown, ArrowRight } from 'lucide-react';
-import heroImage from '../assets/images/gallery/studio-006.png';
+
+const heroImage = imageSources['../assets/images/gallery/studio-006.png'];
 
 function Hero() {
   const scrollToNextSection = () => {
@@ -8,9 +11,14 @@ function Hero() {
 
   return (
     <section className="hero" id="home" aria-labelledby="hero-title">
-      <div
+      <ResponsiveImage
         className="hero-media"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        src={heroImage}
+        mobileCrop
+        sizes="(max-width: 1024px) 1900px, 100vw"
+        alt=""
+        loading="eager"
+        fetchPriority="high"
         aria-hidden="true"
       />
       <div className="hero-overlay" aria-hidden="true" />

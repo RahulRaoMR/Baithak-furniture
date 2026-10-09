@@ -1,7 +1,10 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { useState } from 'react';
 import { ArrowRight, ExternalLink, MessageCircle, Phone } from 'lucide-react';
 import { contactInfo } from '../data/contact.js';
-import consultationImage from '../assets/images/gallery/studio-014.png';
+
+const consultationImage = imageSources['../assets/images/gallery/studio-014.png'];
 
 function CTASection() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -12,7 +15,7 @@ function CTASection() {
       <div className="cta-section__layout">
         <div className="cta-section__visual">
           {consultationImage && !imageFailed && (
-            <img
+            <ResponsiveImage
               className={`cta-section__image${imageLoaded ? ' is-loaded' : ''}`}
               src={consultationImage}
               alt="Blue Baithak lounge chair and matching ottoman in a furnished interior"
@@ -44,7 +47,6 @@ function CTASection() {
               href={contactInfo.whatsapp.href}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Chat with Baithak on WhatsApp"
             >
               <MessageCircle size={19} aria-hidden="true" />
               Chat on WhatsApp
@@ -53,7 +55,6 @@ function CTASection() {
             <a
               className="cta-section__secondary"
               href={contactInfo.phone.href}
-              aria-label="Call Baithak"
             >
               <Phone size={18} aria-hidden="true" />
               Call Baithak
@@ -63,7 +64,6 @@ function CTASection() {
               href={contactInfo.address.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Open Baithak studio location in Google Maps"
             >
               Visit Our Studio
               <ExternalLink size={16} aria-hidden="true" />

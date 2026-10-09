@@ -1,3 +1,4 @@
+import ResponsiveImage from '../components/ResponsiveImage.jsx';
 import { useEffect } from 'react';
 import { ArrowRight, ArrowUpRight, Armchair, Paintbrush, Ruler, SwatchBook } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
@@ -16,7 +17,6 @@ const customisationPossibilities = [
 
 function ProductDetailPage({ product }) {
   useEffect(() => {
-    document.title = `${product.name} | Baithak`;
     window.scrollTo(0, 0);
   }, [product.name]);
 
@@ -32,7 +32,7 @@ function ProductDetailPage({ product }) {
   const relatedProducts = products.filter((item) => item.slug !== product.slug);
   const overviewFields = [
     ['Type', product.category],
-    ['Designed for', 'Residential furniture use'],
+    ['Designed for', product.intendedUse],
     ['Customisation', 'Through consultation'],
     ['Dimensions', product.dimensions],
     ['Materials', product.materials],
@@ -124,8 +124,8 @@ function ProductDetailPage({ product }) {
             <h2 id="product-related-title">Other pieces to consider.</h2>
             <div className="product-related__grid">
               {relatedProducts.map((item) => (
-                <a className="product-related__item" href={item.href} key={item.slug} aria-label={`View ${item.name}`}>
-                  <img src={item.heroImage} alt={item.alt} loading="lazy" decoding="async" />
+                <a className="product-related__item" href={item.href} key={item.slug}>
+                  <ResponsiveImage src={item.heroImage} alt={item.alt} loading="lazy" decoding="async" />
                   <p className="product-detail__eyebrow">{item.category}</p>
                   <h3>{item.name}</h3>
                   <span>View Piece <ArrowUpRight size={17} aria-hidden="true" /></span>

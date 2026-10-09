@@ -1,3 +1,4 @@
+import ResponsiveImage from '../components/ResponsiveImage.jsx';
 import { useEffect, useState } from 'react';
 import { ArrowRight, ArrowUpRight, ChevronLeft, ChevronRight, MapPin, X, ZoomIn } from 'lucide-react';
 import Navbar from '../components/Navbar.jsx';
@@ -5,6 +6,7 @@ import Footer from '../components/Footer.jsx';
 import useDialogFocus from '../hooks/useDialogFocus.js';
 import { contactInfo } from '../data/contact.js';
 import { projects } from '../data/projects.js';
+import { imageDetails } from '../utils/images.js';
 import '../styles/project-detail.css';
 
 function ProjectDetailPage({ project }) {
@@ -15,6 +17,8 @@ function ProjectDetailPage({ project }) {
     .filter((image, index, entries) => image.src && entries.findIndex((entry) => entry.src === image.src) === index);
   const galleryImages = images.slice(1);
   const relatedProjects = projects.filter((item) => item.slug !== project.slug);
+  const heroInfo = imageDetails[project.heroImage];
+  const heroRatio = heroInfo ? heroInfo.width / heroInfo.height : 1;
   const facts = [
     ['Category', project.category],
     ['Location', project.location],
@@ -24,7 +28,6 @@ function ProjectDetailPage({ project }) {
   ].filter(([, value]) => value != null && value !== '' && (!Array.isArray(value) || value.length > 0));
 
   useEffect(() => {
-    document.title = `${project.title} | Baithak`;
     window.scrollTo(0, 0);
   }, [project.title]);
 
@@ -79,7 +82,7 @@ function ProjectDetailPage({ project }) {
             title="Open full photograph"
             onClick={() => setSelectedIndex(0)}
           >
-            <img src={project.heroImage} alt={project.heroAlt} fetchPriority="high" decoding="async" />
+            <ResponsiveImage loading="eager" src={project.heroImage} sizes={`(max-width: 767px) ${Math.ceil(460 * heroRatio)}px, 100vw`} alt={project.heroAlt} fetchPriority="high" decoding="async" />
             <span className="project-hero__zoom" aria-hidden="true"><ZoomIn size={21} /></span>
           </button>
           <div className="project-hero__copy">
@@ -136,7 +139,7 @@ function ProjectDetailPage({ project }) {
                     title="Open full photograph"
                     onClick={() => setSelectedIndex(index + 1)}
                   >
-                    <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                    <ResponsiveImage src={image.src} alt={image.alt} loading="lazy" decoding="async" />
                     <span className="project-hero__zoom" aria-hidden="true"><ZoomIn size={21} /></span>
                   </button>
                 ))}
@@ -174,8 +177,8 @@ function ProjectDetailPage({ project }) {
             <h2 id="project-related-title">Other spaces to explore.</h2>
             <div className="project-related__grid">
               {relatedProjects.map((item) => (
-                <a className="project-related__item" href={item.href} key={item.slug} aria-label={`View ${item.title} project`}>
-                  <img src={item.heroImage} alt={item.heroAlt} loading="lazy" decoding="async" />
+                <a className="project-related__item" href={item.href} key={item.slug}>
+                  <ResponsiveImage src={item.heroImage} alt={item.heroAlt} loading="lazy" decoding="async" />
                   {item.category && <p className="project-detail__eyebrow">{item.category}</p>}
                   <h3>{item.title}</h3>
                   {item.location && <p className="project-related__location"><MapPin size={16} aria-hidden="true" />{item.location}</p>}
@@ -212,7 +215,7 @@ function ProjectDetailPage({ project }) {
               <ChevronLeft size={25} aria-hidden="true" />
             </button>
           )}
-          <img className="archive-viewer__image" src={images[selectedIndex].src} alt={images[selectedIndex].alt} decoding="async" />
+          <ResponsiveImage className="archive-viewer__image" loading="eager" src={images[selectedIndex].src} alt={images[selectedIndex].alt} decoding="async" />
           {images.length > 1 && (
             <button className="archive-viewer__nav archive-viewer__nav--next" type="button" aria-label="View next photograph" title="Next photograph"
               onClick={() => setSelectedIndex((index) => (index + 1) % images.length)}>

@@ -1,10 +1,8 @@
+import ResponsiveImage from './ResponsiveImage.jsx';
+import { imageSources } from '../utils/images.js';
 import { ArrowRight } from 'lucide-react';
 
-const craftsmanshipImages = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp,avif}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-});
+const craftsmanshipImages = imageSources;
 
 const principles = [
   {
@@ -48,7 +46,7 @@ function Craftsmanship() {
         <div className="craftsmanship__visual">
           <span className="craftsmanship__image-fallback" aria-hidden="true" />
           {mainImage && (
-            <img
+            <ResponsiveImage
               className="craftsmanship__main-image"
               src={mainImage}
               alt="Baithak furniture craftsmanship"
@@ -93,7 +91,7 @@ function Craftsmanship() {
           </a>
         </div>
 
-        <div className="craftsmanship__details" aria-label="Craftsmanship details">
+        <div className="craftsmanship__details" role="group" aria-label="Craftsmanship details" tabIndex={0}>
           {detailImages.map((detail, index) => {
             const imageSource = craftsmanshipImages[detail.imagePath];
 
@@ -101,7 +99,7 @@ function Craftsmanship() {
               <div className={`craftsmanship__detail craftsmanship__detail--${index + 1}`} key={detail.alt}>
                 <span className="craftsmanship__image-fallback" aria-hidden="true" />
                 {imageSource && (
-                  <img
+                  <ResponsiveImage
                     src={imageSource}
                     alt={detail.alt}
                     loading="lazy"

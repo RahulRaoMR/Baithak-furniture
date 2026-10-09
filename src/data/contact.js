@@ -1,4 +1,5 @@
 export const contactInfo = {
+  name: 'Baithak',
   email: {
     display: 'Baithakfurniture9@gmail.com',
     href: 'mailto:Baithakfurniture9@gmail.com',
