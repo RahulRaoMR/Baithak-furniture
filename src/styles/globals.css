@@ -9,10 +9,6 @@ html {
   scroll-padding-bottom: calc(96px + env(safe-area-inset-bottom));
 }
 
-#root {
-  padding-bottom: calc(88px + env(safe-area-inset-bottom));
-}
-
 section[id],
 footer[id],
 main[id] {

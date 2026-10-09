@@ -173,6 +173,10 @@
   .site-footer::before { background: rgba(255, 252, 248, 0.82); }
 }
 
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .footer-bottom nav { padding-right: 64px; }
+}
+
 @media (max-width: 599px) {
   .site-footer { padding-top: 40px; }
   .footer-inner { width: calc(100% - 40px); }
