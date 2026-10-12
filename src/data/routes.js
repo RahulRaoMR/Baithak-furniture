@@ -44,7 +44,10 @@ export const pageMetadata = Object.fromEntries([
   }]),
   ...products.map(product => [product.href, { title: `${product.name} | Baithak`, description: product.shortDescription }]),
   ...projects.map(project => [project.href, { title: `${project.title} | Baithak`, description: project.shortDescription }]),
-]);
+].map(([path, metadata]) => [path, {
+  ...metadata,
+  canonical: new URL(path, 'https://www.baithakfurniture.com/').href,
+}]));
 
 export const publicRoutes = Object.keys(pageMetadata);
 

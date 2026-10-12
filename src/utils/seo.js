@@ -10,7 +10,7 @@ function setMeta(attribute, name, content) {
   element.setAttribute('content', content);
 }
 
-export function applyPageMeta({ title, description, noindex = false }) {
+export function applyPageMeta({ title, description, canonical, noindex = false }) {
   document.title = title;
   setMeta('name', 'description', description);
   setMeta('name', 'robots', noindex ? 'noindex, follow' : 'index, follow');
@@ -19,6 +19,20 @@ export function applyPageMeta({ title, description, noindex = false }) {
   setMeta('property', 'og:type', 'website');
   setMeta('name', 'twitter:title', title);
   setMeta('name', 'twitter:description', description);
+
+  let canonicalLink = document.head.querySelector('link[rel="canonical"]');
+  if (canonical && !noindex) {
+    if (!canonicalLink) {
+      canonicalLink = document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      document.head.append(canonicalLink);
+    }
+    canonicalLink.setAttribute('href', canonical);
+    setMeta('property', 'og:url', canonical);
+  } else {
+    canonicalLink?.remove();
+    document.head.querySelector('meta[property="og:url"]')?.remove();
+  }
 
   let schema = document.head.querySelector('#baithak-business-schema');
   if (noindex) schema?.remove();
